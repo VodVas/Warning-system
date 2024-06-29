@@ -11,29 +11,6 @@ public class SoundController : MonoBehaviour
 
     private Coroutine _coroutine;
 
-    private IEnumerator AudioControl(float endVolume)
-    {
-        if (_audioSource.isPlaying == false)
-        {
-            _audioSource.Play();
-        }
-
-
-        while (_audioSource.volume != endVolume)
-        {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, endVolume, _speed * Time.deltaTime);
-
-            yield return null;
-        }
-
-        _audioSource.volume = endVolume;
-
-        if (Mathf.Approximately(_audioSource.volume, 0f))
-        {
-            _audioSource.Stop();
-        }
-    }
-
     private void OnEnable()
     {
         _playerDetector.OnTiggerEnter += StartAlarm;
@@ -44,6 +21,28 @@ public class SoundController : MonoBehaviour
     {
         _playerDetector.OnTiggerEnter -= StartAlarm;
         _playerDetector.OnTiggerExit -= StopAlarm;
+    }
+
+    private IEnumerator AudioControl(float endVolume)
+    {
+        if (_audioSource.isPlaying == false)
+        {
+            _audioSource.Play();
+        }
+
+        while (_audioSource.volume != endVolume)
+        {
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, endVolume, _speed * Time.deltaTime);
+
+            yield return null;
+        }
+
+        _audioSource.volume = endVolume;
+
+        if (_audioSource.volume == 0f)
+        {
+            _audioSource.Stop();
+        }
     }
 
     private void StartAlarm()
